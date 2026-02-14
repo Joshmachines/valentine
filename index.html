@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You Be My Valentine?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0, #f48fb1);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Floating hearts background */
+    .hearts-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      bottom: -50px;
+      font-size: 20px;
+      animation: floatUp linear infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+      50% { opacity: 0.6; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: white;
+      border-radius: 30px;
+      padding: 40px 50px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(233, 30, 99, 0.3);
+      max-width: 500px;
+      width: 90%;
+      animation: cardEntry 0.8s ease-out;
+    }
+
+    @keyframes cardEntry {
+      from { transform: scale(0.5) translateY(50px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .bear-img {
+      font-size: 120px;
+      line-height: 1;
+      margin-bottom: 10px;
+      animation: bearBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bearBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .question {
+      font-family: 'Dancing Script', cursive;
+      font-size: 32px;
+      color: #c2185b;
+      margin: 15px 0 30px;
+      line-height: 1.3;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      min-height: 80px;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #e91e63, #c2185b);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 40px;
+      font-size: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
+    }
+
+    .btn-yes:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(233, 30, 99, 0.5);
+    }
+
+    .btn-no {
+      background: #f5f5f5;
+      color: #777;
+      border: 2px solid #ddd;
+      border-radius: 50px;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-no:hover {
+      background: #eee;
+    }
+
+    /* YES screen */
+    .yes-screen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #ff4081, #e91e63, #c2185b);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      animation: yesEntry 0.6s ease-out;
+    }
+
+    .yes-screen.show {
+      display: flex;
+    }
+
+    @keyframes yesEntry {
+      from { transform: scale(0); border-radius: 50%; }
+      to { transform: scale(1); border-radius: 0; }
+    }
+
+    .yes-screen .couple-img {
+      font-size: 130px;
+      margin-bottom: 20px;
+      animation: coupleFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes coupleFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    .yes-screen h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 48px;
+      color: white;
+      margin-bottom: 10px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .yes-screen p {
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 400;
+    }
+
+    .yes-hearts {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 101;
+    }
+
+    .burst-heart {
+      position: absolute;
+      font-size: 30px;
+      animation: burstOut 2s ease-out forwards;
+    }
+
+    @keyframes burstOut {
+      0% { transform: scale(0); opacity: 1; }
+      50% { opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* Shake animation for no click */
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <div class="card" id="card">
+    <div class="bear-img">🧸💐</div>
+    <div class="question">Will you be my Valentine?</div>
+    <div class="buttons">
+      <button class="btn-yes" id="btnYes" onclick="sayYes()">Yes! 💕</button>
+      <button class="btn-no" id="btnNo" onclick="sayNo()">No</button>
+    </div>
+  </div>
+
+  <div class="yes-screen" id="yesScreen">
+    <div class="couple-img">💑</div>
+    <h1>Yaaay! 💖</h1>
+    <p>I knew you'd say yes!</p>
+    <div class="yes-hearts" id="yesHearts"></div>
+  </div>
+
+  <!-- Background music - a gentle royalty-free tune -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2024/11/29/audio_d4c5da30e6.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="yesSound" preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/24/audio_1cef58725c.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // No button text sequence
+    const noTexts = [
+      "No",
+      "Are you sure? 🥺",
+      "Think again! 💭",
+      "Really really sure? 😢",
+      "Double sure?? 😿",
+      "It'll break my heart 💔",
+      "You're breaking my heart! 😭",
+      "I'll be so sad... 🥀",
+      "Pretty please? 🙏",
+      "Just say yes! 😩",
+      "Last chance... 🫣",
+      "Okay fine... 😞",
+      "Just kidding, say yes! 🤭",
+      "I won't give up! 💪",
+      "PLEASE 😫😫😫",
+    ];
+
+    let noCount = 0;
+    let yesSize = 20;
+    let noSize = 16;
+    let musicStarted = false;
+
+    const btnYes = document.getElementById('btnYes');
+    const btnNo = document.getElementById('btnNo');
+    const card = document.getElementById('card');
+
+    function startMusic() {
+      if (!musicStarted) {
+        const music = document.getElementById('bgMusic');
+        music.volume = 0.3;
+        music.play().catch(() => {});
+        musicStarted = true;
+      }
+    }
+
+    function sayNo() {
+      startMusic();
+      noCount++;
+
+      // Grow yes button
+      yesSize = Math.min(20 + noCount * 6, 60);
+      btnYes.style.fontSize = yesSize + 'px';
+      btnYes.style.padding = `${15 + noCount * 3}px ${40 + noCount * 8}px`;
+
+      // Shrink no button
+      noSize = Math.max(16 - noCount * 1, 8);
+      btnNo.style.fontSize = noSize + 'px';
+      btnNo.style.padding = `${Math.max(12 - noCount, 4)}px ${Math.max(30 - noCount * 2, 10)}px`;
+      btnNo.style.opacity = Math.max(1 - noCount * 0.05, 0.4);
+
+      // Change no button text
+      const textIndex = Math.min(noCount, noTexts.length - 1);
+      btnNo.textContent = noTexts[textIndex];
+
+      // Shake the bear
+      const bear = document.querySelector('.bear-img');
+      bear.classList.remove('shake');
+      void bear.offsetWidth; // trigger reflow
+      bear.classList.add('shake');
+
+      // Change bear expression at higher counts
+      if (noCount >= 10) {
+        bear.textContent = '🧸😭';
+      } else if (noCount >= 5) {
+        bear.textContent = '🧸🥺';
+      }
+    }
+
+    function sayYes() {
+      startMusic();
+
+      // Stop bg music, play celebration
+      document.getElementById('bgMusic').pause();
+      const yesSound = document.getElementById('yesSound');
+      yesSound.volume = 0.5;
+      yesSound.play().catch(() => {});
+
+      // Show yes screen
+      document.getElementById('yesScreen').classList.add('show');
+      card.style.display = 'none';
+
+      // Burst hearts
+      createHeartBurst();
+    }
+
+    function createHeartBurst() {
+      const container = document.getElementById('yesHearts');
+      const hearts = ['❤️', '💕', '💖', '💗', '💝', '💘', '🩷', '🤍'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'burst-heart';
+          heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.top = Math.random() * 100 + '%';
+          heart.style.fontSize = (20 + Math.random() * 40) + 'px';
+          heart.style.animationDuration = (1 + Math.random() * 2) + 's';
+          container.appendChild(heart);
+          setTimeout(() => heart.remove(), 3000);
+        }, i * 100);
+      }
+    }
+
+    // Create floating background hearts
+    function createFloatingHearts() {
+      const container = document.getElementById('heartsBg');
+      const hearts = ['❤️', '💕', '💗', '🩷'];
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (15 + Math.random() * 25) + 'px';
+        heart.style.animationDuration = (5 + Math.random() * 10) + 's';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(heart);
+      }
+    }
+
+    createFloatingHearts();
+  </script>
+</body>
+</html>
